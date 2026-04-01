@@ -11,8 +11,9 @@
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
   :root {
-    --bg-warm: #eae3d9; /* Back to the poster's original muted cream */
+    --bg-warm: #eae3d9; 
     --black: #1a1512;
+    --accent-crimson: #801818; /* The new cinematic accent tone */
     --font: 'Archivo', sans-serif;
     --ease: cubic-bezier(0.77, 0, 0.175, 1);
   }
@@ -51,20 +52,16 @@
     gap: 0;
   }
 
-  /* STYLIZED PHOTO SLICES (Monochromatic & Harshly Cropped) */
+  /* STYLIZED PHOTO SLICES */
   .photo-slice {
     border: 1px solid rgba(0,0,0,0.08);
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
-    /* This forces the images into high-contrast black and white to match the poster's mood */
     filter: grayscale(100%) contrast(120%);
     transition: transform 1.2s var(--ease), opacity 1.2s var(--ease);
   }
 
-  /* 🚨 DROP YOUR IMAGE LINKS HERE 🚨
-    Replace the URLs inside the quotes with your actual photo links.
-  */
   .slice-1 { 
     grid-column: 1 / 4; 
     grid-row: 1 / 9; 
@@ -118,10 +115,10 @@
     cursor: pointer;
     border: none;
     background: none;
-    color: var(--black);
+    color: var(--accent-crimson); /* Accent applied here */
     transition: opacity 0.3s;
   }
-  .nav-item:hover { opacity: 0.5; }
+  .nav-item:hover { opacity: 0.6; }
 
   /* FULLSCREEN CONTENT PANELS */
   .fullscreen-content {
@@ -161,10 +158,10 @@
     cursor: pointer;
     border: none;
     background: none;
-    color: var(--black);
+    color: var(--accent-crimson); /* Accent applied here */
     transition: opacity 0.2s;
   }
-  .close-btn:hover { opacity: 0.5; }
+  .close-btn:hover { opacity: 0.6; }
 
   /* CATEGORIES GRID */
   .category-container {
@@ -184,7 +181,13 @@
     height: 140px;
   }
 
-  .cat-label { font-size: 11px; font-weight: 700; text-transform: uppercase; opacity: 0.5; }
+  .cat-label { 
+    font-size: 11px; 
+    font-weight: 700; 
+    text-transform: uppercase; 
+    color: var(--accent-crimson); /* Accent applied here */
+  }
+  
   .cat-title { font-size: 24px; font-weight: 900; text-transform: uppercase; margin-top: 5px; }
   
   .editorial-link {
@@ -195,9 +198,9 @@
     text-transform: uppercase;
     margin-top: auto;
     display: block;
-    transition: opacity 0.2s;
+    transition: color 0.2s;
   }
-  .editorial-link:hover { opacity: 0.5; }
+  .editorial-link:hover { color: var(--accent-crimson); }
 
   /* SPLIT-MOTION ANIMATION */
   .canvas.displaced .slice-1 { transform: translateY(-40px); opacity: 0.5; }
@@ -208,7 +211,7 @@
     .canvas { width: 95vw; }
     .main-title { font-size: 50px; }
     .category-container { grid-template-columns: 1fr; overflow-y: auto; }
-    .slice-3 { display: none; } /* Focus on the staggered overlaps for mobile */
+    .slice-3 { display: none; }
   }
 </style>
 </head>
@@ -299,7 +302,7 @@
     </div>
     <div style="grid-column: 2 / 10; grid-row: 5 / 11;">
       <a href="mailto:ronansullivan@hotmail.co.uk" style="font-size: 30px; font-weight: 900; color: var(--black); text-decoration: none; display: block; margin-bottom: 10px; transition: opacity 0.2s;">ronansullivan@hotmail.co.uk</a>
-      <a href="https://www.linkedin.com/in/ronanmsullivan/" target="_blank" style="font-size: 20px; font-weight: 700; color: var(--black); text-decoration: none;">View LinkedIn Profile →</a>
+      <a href="https://www.linkedin.com/in/ronanmsullivan/" target="_blank" style="font-size: 20px; font-weight: 700; color: var(--accent-crimson); text-decoration: none;">View LinkedIn Profile →</a>
     </div>
   </div>
 
