@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ronan Sullivan — Portfolio</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg-color: #f4f6fa;
+    --navy: #0e153a;
+    --blue: #3d5afe;
+    --text-dark: #333;
+    --text-light: #fff;
+    --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
+  }
+
+  body {
+    background-color: var(--bg-color);
+    color: var(--text-dark);
+    font-family: 'Poppins', sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    overflow: hidden; /* Prevent body scroll during animation */
+  }
+
+  /* Core UI Wrapper (The 'impeccable' frame) */
+  .portfolio-canvas {
+    width: 95vw;
+    max-width: 1300px;
+    height: 85vh;
+    background-color: #fff;
+    border-radius: 20px;
+    box-shadow: 0 30px 60px rgba(0,0,0,0.1);
+    display: grid;
+    grid-template-rows: 80px 1fr 60px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  /* Header Section (Title persistent) */
+  .p-header {
+    background-color: var(--navy);
+    color: var(--text-light);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 40px;
+    border-bottom: 3px solid var(--blue);
+    z-index: 10;
+  }
+
+  .p-title {
+    font-size: 24px;
+    font-weight: 700;
+  }
+
+  .p-title span { color: var(--blue); }
+
+  .live-time {
+    font-size: 14px;
+    font-weight: 500;
+  }
+
+  /* DYNAMIC CONTENT HUB */
+  .p-main {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+  }
+
+  .page {
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    padding: 40px;
+    transition: transform 0.6s var(--ease-out), opacity 0.6s var(--ease-out);
+    transform: translateX(0%);
+    opacity: 1;
+    z-index: 5;
+  }
+
+  .page.inactive {
+    transform: translateX(100%);
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  /* KINETIC SCROLLING CATEGORY CAROUSEL */
+  .carousel-wrapper {
+    flex: 1;
+    overflow: hidden;
+    position: relative;
+    display: flex;
+    align-items: center;
+    cursor: grab;
+  }
+
+  .carousel-track {
+    display: flex;
+    gap: 20px;
+    padding: 20px;
+    transition: transform 0.1s var(--ease-out);
+    will-change: transform;
+  }
+
+  .writing-card {
+    flex: 0 0 320px;
+    height: 200px;
+    background: #fdfdfd;
+    border: 2px solid #eaeaea;
+    border-radius: 12px;
+    padding: 25px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    transition: all 0.3s var(--ease-out);
+    user-select: none;
+    position: relative;
+  }
+
+  .writing-card:hover {
+    transform: translateY(-8px);
+    border-color: var(--blue);
+    box-shadow: 0 15px 30px rgba(61, 90, 254, 0.1);
+  }
+
+  .cat-tag {
+    font-size: 10px;
+    font-weight: 700;
+    color: var(--blue);
+    text-transform: uppercase;
+    margin-bottom: 10px;
+  }
+
+  .writing-title {
+    font-size: 18px;
+    font-weight: 600;
+    line-height: 1.4;
+    color: var(--navy);
+  }
+
+  .view-piece {
+    font-size: 12px;
+    font-weight: 600;
+    color: #666;
+    text-transform: uppercase;
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+  .view-piece:hover { color: var(--blue); }
+
+  /* SUB-SECTION VIEWER (Slides in kinetically) */
+  .viewer-panel {
+    position: absolute;
+    top: 0; right: 0;
+    width: 60%;
+    height: 100%;
+    background: #fff;
+    border-left: 1px solid #eaeaea;
+    padding: 40px;
+    z-index: 20;
+    transition: transform 0.6s var(--ease-out);
+    transform: translateX(100%);
+    display: flex;
+    flex-direction: column;
+  }
+
+  .viewer-panel.active { transform: translateX(0%); }
+
+  .viewer-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 2px solid #eaeaea;
+    padding-bottom: 15px;
+    margin-bottom: 20px;
+  }
+
+  .viewer-title { font-weight: 700; font-size: 20px; }
+  .close-viewer {
+    background: none; border: none; font-size: 24px; cursor: pointer; color: #aaa; transition: color 0.2s;
+  }
+  .close-viewer:hover { color: #333; }
+
+  .viewer-content { flex: 1; overflow-y: auto; line-height: 1.8; color: #555; font-size: 14px; }
+  .viewer-content a { color: var(--blue); text-decoration: none; font-weight: 600;}
+
+  /* HUD CONTROLS: Impeccable Footer */
+  .p-footer {
+    background-color: #f7f9fa;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 30px;
+    padding: 0 40px;
+    border-top: 1px solid #eaeaea;
+    z-index: 10;
+  }
+
+  .nav-link {
+    font-size: 14px;
+    font-weight: 600;
+    color: #666;
+    text-decoration: none;
+    cursor: pointer;
+    position: relative;
+    transition: color 0.2s;
+    text-transform: uppercase;
+  }
+
+  .nav-link:hover, .nav-link.active { color: var(--blue); }
+  .nav-link::after {
+    content: '';
+    position: absolute;
+    bottom: -5px; left: 0;
+    width: 100%;
+    height: 2px;
+    background-color: var(--blue);
+    transform: scaleX(0);
+    transition: transform 0.3s var(--ease-out);
+  }
+  .nav-link.active::after { transform: scaleX(1); }
+
+  @media (max-width: 900px) {
+    .p-main { grid-template-columns: 1fr; }
+    .page, .viewer-panel { padding: 20px; }
+    .viewer-panel { width: 100%; }
+  }
+</style>
+</head>
+<body>
+
+  <div class="portfolio-canvas">
+    
+    <div class="p-header">
+      <div class="p-title">Ronan <span>Sullivan</span> Portfolio</div>
+      <div class="live-time" id="clock">WED 1 APR | 10:30 PM</div>
+    </div>
+
+    <div class="p-main" id="dynamic-hub">
+      
+      <div class="page" id="page-about">
+        <h1>ABOUT & BIO</h1>
+        <div style="flex: 1; display: flex; align-items: center;">
+          <p style="max-width: 600px; line-height: 1.8; color: #555;">I am Ronan Sullivan, a dedicated journalist currently studying for an NCTJ Diploma at the PA Media Academy in London. I specialize in real-time sports journalism, cultural analytics, and in-depth column writing. My goal is to craft compelling narratives that highlight grassroots triumphs and high-level theatrical execution alike.</p>
+        </div>
+      </div>
+
+      <div class="page inactive" id="page-writing">
+        <h1>WRITING SUB-SECTIONS</h1>
+        <div class="carousel-wrapper" id="writing-carousel">
+          <div class="carousel-track" id="carousel-track">
+            
+            <div class="writing-card" onmousedown="startClick()" onmouseup="endClick('sports')">
+              <div>
+                <div class="cat-tag">Section</div>
+                <div class="writing-title">Sports Reporting</div>
+              </div>
+              <span class="view-piece">Read Reports</span>
+            </div>
+
+            <div class="writing-card" onmousedown="startClick()" onmouseup="endClick('theatre')">
+              <div>
+                <div class="cat-tag">Section</div>
+                <div class="writing-title">Theatre & Arts Reviews</div>
+              </div>
+              <span class="view-piece">Read Reviews</span>
+            </div>
+
+            <div class="writing-card" onmousedown="startClick()" onmouseup="endClick('columns')">
+              <div>
+                <div class="cat-tag">Section</div>
+                <div class="writing-title">Written Columns</div>
+              </div>
+              <span class="view-piece">Read Pieces</span>
+            </div>
+
+            <div class="writing-card" onmousedown="startClick()" onmouseup="endClick('books')">
+              <div>
+                <div class="cat-tag">Section</div>
+                <div class="writing-title">Book Critiques</div>
+              </div>
+              <span class="view-piece">Read Analysis</span>
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+      <div class="page inactive" id="page-contact">
+        <h1>CONTACT & NETWORK</h1>
+        <div style="flex: 1; display: flex; flex-direction: column; justify-content: center; gap: 20px;">
+          <a href="mailto:ronansullivan@hotmail.co.uk" style="font-size: 18px; color: var(--blue); text-decoration: none;">ronansullivan@hotmail.co.uk</a>
+          <a href="https://www.linkedin.com/in/ronanmsullivan/" target="_blank" style="font-size: 18px; color: var(--navy); text-decoration: none;">View LinkedIn Profile</a>
+        </div>
+      </div>
+
+      <div class="viewer-panel" id="viewer-panel">
+        <div class="viewer-header">
+          <div class="viewer-title" id="v-title">Title</div>
+          <button class="close-viewer" onclick="closeViewer()">×</button>
+        </div>
+        <div class="viewer-content" id="v-body">
+          Links and summaries will appear here...
+        </div>
+      </div>
+
+    </div>
+
+    <div class="p-footer">
+      <span class="nav-link active" onclick="navTo('about', this)">Bio</span>
+      <span class="nav-link" onclick="navTo('writing', this)">Writing</span>
+      <span class="nav-link" onclick="navTo('contact', this)">Contact</span>
+    </div>
+
+  </div>
+
+  <script>
+    const validPages = ['about', 'writing', 'contact'];
+    let currentPage = 'about';
+    const hub = document.getElementById('dynamic-hub');
+
+    // Portfolio Data neatly arranged
+    const contentData = {
+      sports: {
+        title: "Live Sports Reporting",
+        text: "Direct coverage of active football matches, highlighting key community events and European debuts. <br><br>👉 <a href='https://enfielddispatch.co.uk/win-over-welsh-side-will-go-long-way-to-securing-enfield-towns-fenix-trophy-play-off-place/' target='_blank'>View Fenix Trophy Account</a>"
+      },
+      theatre: {
+        title: "Theatre & Arts",
+        text: "In-depth critiques of stage performances at the National Theatre.<br><br>👉 <a href='https://ronanswriting.blogspot.com/2023/05/national-theatre-review-motive-and-cue.html' target='_blank'>The Motive and the Cue Review</a><br>👉 <a href='https://ronanswriting.blogspot.com/2023/05/national-theatre-dancing-at-lughnasa.html' target='_blank'>Dancing at Lughnasa Review</a>"
+      },
+      columns: {
+        title: "Columns",
+        text: "Reflective pieces produced as a freshers columnist.<br><br>👉 <a href='https://impactnottingham.com/2018/03/acting-souljam-drunk-texting-grateful-another-month-life-freshers-columnist/' target='_blank'>'Acting Souljam...'</a><br>👉 <a href='https://impactnottingham.com/2018/01/fresh-year-freshers-columnist/' target='_blank'>'Fresh Year'</a>"
+      },
+      books: {
+        title: "Book Critiques",
+        text: "Thorough book reviews on the official blog.<br><br>👉 <a href='https://ronanswriting.blogspot.com/2022/12/book-review-wednesday-second-place-by.html' target='_blank'>Review: My Brilliant Friend</a><br>👉 <a href='https://ronanswriting.blogspot.com/2022/12/book-review-wednesday-second-place-by.html' target='_blank'>Review: Second Place</a>"
+      }
+    };
+
+    // Navigation logic (Pages fade)
+    function navTo(pageId, navElement) {
+      if (pageId === currentPage || !validPages.includes(pageId)) return;
+
+      document.getElementById('page-' + currentPage).classList.add('inactive');
+      document.getElementById('page-' + pageId).classList.remove('inactive');
+      
+      document.querySelectorAll('.nav-link').forEach(link => link.classList.remove('active'));
+      navElement.classList.add('active');
+
+      currentPage = pageId;
+      closeViewer(); // Ensure viewer closes when switching main pages
+    }
+
+    // Carousel logic (Draggable)
+    const carouselWrapper = document.getElementById('writing-carousel');
+    const track = document.getElementById('carousel-track');
+    
+    let isDragging = false;
+    let startX = 0;
+    let currentX = 0;
+    let currentTranslate = 0;
+    let prevTranslate = 0;
+
+    // Handle Drag start
+    carouselWrapper.addEventListener('mousedown', dragStart);
+    carouselWrapper.addEventListener('mousemove', dragMove);
+    carouselWrapper.addEventListener('mouseup', dragEnd);
+    carouselWrapper.addEventListener('mouseleave', dragEnd);
+
+    function dragStart(ev) {
+      isDragging = true;
+      startX = ev.clientX;
+      carouselWrapper.style.cursor = 'grabbing';
+      // Disable smooth transition during drag for direct feedback
+      track.style.transition = 'none';
+    }
+
+    function dragMove(ev) {
+      if (!isDragging) return;
+      const currentMouseX = ev.clientX;
+      currentX = currentMouseX - startX;
+      currentTranslate = prevTranslate + currentX;
+      setSliderPosition();
+    }
+
+    function dragEnd() {
+      if (!isDragging) return;
+      isDragging = false;
+      carouselWrapper.style.cursor = 'grab';
+      
+      // Keep track of the final position
+      prevTranslate = currentTranslate;
+      track.style.transition = 'transform 0.5s var(--ease-out)'; // Re-enable smoothness
+    }
+
+    function setSliderPosition() {
+      // Basic boundaries (optional: can tighten constraints)
+      const maxTranslate = 0;
+      const minTranslate = (track.children.length - 2) * -340; // Total track width minus viewable area
+
+      if(currentTranslate > maxTranslate) currentTranslate = maxTranslate;
+      if(currentTranslate < minTranslate) currentTranslate = minTranslate;
+
+      track.style.transform = `translateX(${currentTranslate}px)`;
+    }
+
+    // Click logic differentiation for Cards (Only fire if not a long drag)
+    let clickStartTime;
+    function startClick() { clickStartTime = Date.now(); }
+    function endClick(subType) {
+      const clickDuration = Date.now() - clickStartTime;
+      if (clickDuration < 200) { // If mouse up in less than 200ms, it's a click, not a drag release
+        openViewer(subType);
+      }
+    }
+
+    // Viewer Logic (Slide-in)
+    function openViewer(subType) {
+      if (!contentData[subType]) return;
+      
+      const panel = document.getElementById('viewer-panel');
+      document.getElementById('v-title').innerText = contentData[subType].title;
+      document.getElementById('v-body').innerHTML = contentData[subType].text;
+      
+      panel.classList.add('active');
+    }
+
+    function closeViewer() {
+      document.getElementById('viewer-panel').classList.remove('active');
+    }
+
+    // Live clock update
+    function updateClock() {
+      const now = new Date();
+      const options = { weekday: 'short', month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit', hour12: true };
+      const formatted = now.toLocaleDateString('en-GB', options).toUpperCase();
+      document.getElementById('clock').innerText = formatted;
+    }
+    setInterval(updateClock, 1000);
+    updateClock();
+
+  </script>
+</body>
+</html>
