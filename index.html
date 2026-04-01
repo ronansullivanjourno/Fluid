@@ -6,420 +6,329 @@
 <title>Ronan Sullivan — Portfolio</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=Playfair+Display:ital,wght@0,700;1,400&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;700;900&display=swap" rel="stylesheet">
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
   :root {
-    --bg: #f9f6f0; /* Soft, warm cinematic poster off-white */
-    --dark: #1a1a1a; /* Rich, dark off-black */
-    --accent: #c5a880; /* Muted gold / sand editorial accent */
-    --serif: 'Playfair Display', serif;
-    --sans: 'DM Sans', sans-serif;
-    --ease: cubic-bezier(0.25, 1, 0.5, 1);
+    --bg-warm: #eae3d9; /* The poster's muted, paper-like cream */
+    --black: #1a1512;
+    --font: 'Archivo', sans-serif;
+    --ease: cubic-bezier(0.77, 0, 0.175, 1); /* Dramatic, high-end easing */
   }
 
   body {
-    background-color: var(--bg);
-    color: var(--dark);
-    font-family: var(--sans);
+    background-color: var(--bg-warm);
+    color: var(--black);
+    font-family: var(--font);
+    min-height: 100vh;
     display: flex;
     justify-content: center;
     align-items: center;
-    min-height: 100vh;
     overflow: hidden;
   }
 
-  /* CINEMATIC POSTER FRAME */
-  .portfolio-canvas {
+  /* GRAIN OVERLAY: To match that heavy 35mm film texture from the poster */
+  body::before {
+    content: '';
+    position: fixed;
+    top: 0; left: 0; width: 100%; height: 100%;
+    opacity: 0.25;
+    pointer-events: none;
+    z-index: 50;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+
+  /* CANVAS GRID (The raw poster frame layout) */
+  .canvas {
     width: 90vw;
-    max-width: 1200px;
+    max-width: 1000px;
     height: 85vh;
     display: grid;
-    grid-template-rows: auto 1fr auto;
+    grid-template-columns: repeat(12, 1fr);
+    grid-template-rows: repeat(12, 1fr);
     position: relative;
-    padding: 40px 0;
+    gap: 0; /* Poster style uses flush or overlapping crops, not gaps */
   }
 
-  /* HEADER: Bold Editorial Typography */
-  .header {
-    text-align: center;
-    border-bottom: 1px solid rgba(26, 26, 26, 0.1);
-    padding-bottom: 30px;
+  /* BACKGROUND PANELS (Simulating the overlapping portrait slices) */
+  .photo-slice {
+    background-color: #d8cfc0;
+    border: 1px solid rgba(0,0,0,0.05);
+    background-size: cover;
+    background-position: center;
+    transition: transform 1.2s var(--ease), opacity 1.2s var(--ease);
   }
 
-  .title {
-    font-family: var(--serif);
-    font-size: 48px;
-    font-weight: 700;
-    letter-spacing: -1px;
-    line-height: 1;
-    text-transform: capitalize;
-  }
+  /* Specific slice coordinates mimicking the poster's staggered layout */
+  .slice-1 { grid-column: 1 / 4; grid-row: 1 / 9; }
+  .slice-2 { grid-column: 4 / 9; grid-row: 4 / 12; background-color: #cdc1b0; }
+  .slice-3 { grid-column: 9 / 13; grid-row: 2 / 13; background-color: #c0b29f; }
 
-  .title span {
-    font-family: var(--serif);
-    font-weight: 400;
-    font-style: italic;
-    color: var(--accent);
-  }
-
-  .subtitle {
-    font-size: 11px;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 4px;
-    color: rgba(26, 26, 26, 0.5);
-    margin-top: 10px;
-  }
-
-  /* MAIN CONTENT AREA with cinematic blur-in transition */
-  .main-content {
-    position: relative;
-    overflow: hidden;
-    margin: 40px 0;
-  }
-
-  .page {
+  /* OVERLAY CONTENT (Floating clinical text like film credits/accolades) */
+  .poster-text {
     position: absolute;
-    top: 0; left: 0; right: 0; bottom: 0;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    text-align: center;
-    opacity: 0;
-    filter: blur(20px);
-    transform: scale(0.98);
-    transition: opacity 0.8s var(--ease), filter 0.8s var(--ease), transform 0.8s var(--ease);
+    z-index: 10;
     pointer-events: none;
+    line-height: 1;
   }
 
-  .page.active {
-    opacity: 1;
-    filter: blur(0px);
-    transform: scale(1);
-    pointer-events: auto;
-  }
-
-  /* PAGE: BIO/ABOUT */
-  .bio-text {
-    font-family: var(--serif);
+  .stars {
+    top: 5%; left: 35%;
     font-size: 24px;
-    line-height: 1.6;
-    max-width: 750px;
-    color: var(--dark);
-  }
-
-  /* PAGE: CATEGORIES (Staggered Grid Load) */
-  .grid-container {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 30px;
-    width: 100%;
-    max-width: 900px;
-  }
-
-  .category-card {
-    background: none;
-    border: none;
-    text-align: left;
-    cursor: pointer;
-    padding: 20px;
-    border-bottom: 1px solid rgba(26, 26, 26, 0.15);
-    transition: border-color 0.4s ease, transform 0.4s var(--ease);
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    height: 140px;
-  }
-
-  .category-card:hover {
-    border-color: var(--dark);
-    transform: translateY(-5px);
-  }
-
-  .card-num {
-    font-size: 11px;
-    font-weight: 700;
-    color: var(--accent);
     letter-spacing: 2px;
   }
 
-  .card-title {
-    font-family: var(--serif);
-    font-size: 28px;
-    font-weight: 700;
-    color: var(--dark);
-    margin-top: auto;
-  }
-
-  /* STYLIZED MODAL/OVERLAY for individual sections */
-  .overlay-panel {
-    position: absolute;
-    top: 0; left: 0; right: 0; bottom: 0;
-    background-color: var(--bg);
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    opacity: 0;
-    pointer-events: none;
-    transform: translateY(15px);
-    transition: opacity 0.5s var(--ease), transform 0.5s var(--ease);
-    z-index: 5;
-  }
-
-  .overlay-panel.active {
-    opacity: 1;
-    pointer-events: auto;
-    transform: translateY(0);
-  }
-
-  .panel-title {
-    font-family: var(--serif);
+  .quote {
+    top: 10%; left: 35%;
     font-size: 32px;
-    margin-bottom: 20px;
+    font-weight: 900;
+    max-width: 400px;
+    letter-spacing: -1px;
+    text-transform: uppercase;
   }
 
-  .panel-links {
+  /* THE MAIN NAVIGATION / TITLE */
+  .masthead {
+    grid-column: 1 / 13;
+    grid-row: 9 / 13;
+    z-index: 20;
     display: flex;
     flex-direction: column;
-    gap: 15px;
-    margin-top: 20px;
+    justify-content: flex-end;
+    padding: 30px;
+    pointer-events: none;
   }
 
-  .editorial-link {
+  .main-title {
+    font-size: 80px;
+    font-weight: 900;
+    letter-spacing: -3px;
+    line-height: 0.85;
+    text-transform: uppercase;
+    color: var(--black);
+    pointer-events: auto;
+  }
+
+  .main-nav {
+    display: flex;
+    gap: 40px;
+    margin-top: 20px;
+    pointer-events: auto;
+  }
+
+  .nav-item {
     font-size: 14px;
     font-weight: 700;
     text-transform: uppercase;
-    letter-spacing: 2px;
-    color: var(--dark);
-    text-decoration: none;
-    position: relative;
-    padding-bottom: 5px;
-  }
-
-  .editorial-link::after {
-    content: '';
-    position: absolute;
-    bottom: 0; left: 0;
-    width: 100%; height: 1px;
-    background-color: var(--accent);
-    transform: scaleX(0);
-    transform-origin: right;
-    transition: transform 0.4s var(--ease);
-  }
-
-  .editorial-link:hover::after {
-    transform: scaleX(1);
-    transform-origin: left;
-  }
-
-  .back-btn {
-    margin-top: 40px;
-    background: none;
-    border: none;
-    font-size: 11px;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 3px;
-    color: rgba(26, 26, 26, 0.4);
+    letter-spacing: 1px;
     cursor: pointer;
-    transition: color 0.3s ease;
+    border: none;
+    background: none;
+    color: var(--black);
+    transition: opacity 0.3s;
+  }
+  .nav-item:hover { opacity: 0.6; }
+
+  /* DYNAMIC SLIDE-IN PANELS (The 'Sub-Pages') */
+  .fullscreen-content {
+    position: absolute;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background-color: var(--bg-warm);
+    z-index: 30;
+    display: grid;
+    grid-template-columns: repeat(12, 1fr);
+    grid-template-rows: repeat(12, 1fr);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.8s var(--ease);
   }
 
-  .back-btn:hover { color: var(--dark); }
+  .fullscreen-content.active {
+    opacity: 1;
+    pointer-events: auto;
+  }
 
-  /* FOOTER NAVIGATION: Ultra minimal */
-  .footer {
+  .content-header {
+    grid-column: 2 / 12;
+    grid-row: 2 / 4;
+    font-size: 40px;
+    font-weight: 900;
+    text-transform: uppercase;
+    border-bottom: 3px solid var(--black);
     display: flex;
-    justify-content: center;
-    gap: 40px;
-    border-top: 1px solid rgba(26, 26, 26, 0.1);
-    padding-top: 30px;
+    align-items: center;
+    justify-content: space-between;
   }
 
-  .nav-btn {
-    background: none;
-    border: none;
-    font-size: 11px;
+  .close-btn {
+    font-size: 16px;
     font-weight: 700;
     text-transform: uppercase;
-    letter-spacing: 3px;
-    color: rgba(26, 26, 26, 0.4);
     cursor: pointer;
-    position: relative;
-    transition: color 0.3s ease;
-    padding-bottom: 5px;
+    border: none;
+    background: none;
   }
 
-  .nav-btn:hover, .nav-btn.active {
-    color: var(--dark);
+  /* Categories Grid inside the writing tab */
+  .category-container {
+    grid-column: 2 / 12;
+    grid-row: 5 / 12;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 30px;
   }
 
-  .nav-btn::after {
-    content: '';
-    position: absolute;
-    bottom: 0; left: 50%;
-    width: 4px; height: 4px;
-    border-radius: 50%;
-    background-color: var(--accent);
-    transform: translateX(-50%) scale(0);
-    transition: transform 0.3s var(--ease);
+  .category-box {
+    border-top: 2px solid var(--black);
+    padding-top: 15px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    height: 150px;
   }
 
-  .nav-btn.active::after {
-    transform: translateX(-50%) scale(1);
+  .cat-label { font-size: 11px; font-weight: 700; text-transform: uppercase; opacity: 0.5; }
+  .cat-title { font-size: 24px; font-weight: 900; text-transform: uppercase; }
+  
+  .editorial-link {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--black);
+    text-decoration: none;
+    text-transform: uppercase;
+    margin-top: auto;
+    display: block;
+    transition: opacity 0.2s;
   }
+  .editorial-link:hover { opacity: 0.5; }
 
-  /* MEDIA QUERIES */
+  /* SOPHISTICATED SPLIT ANIMATION (Triggered on view) */
+  .canvas.displaced .slice-1 { transform: translateY(-30px); opacity: 0.5; }
+  .canvas.displaced .slice-2 { transform: translateY(30px); opacity: 0.5; }
+  .canvas.displaced .slice-3 { transform: translateX(30px); opacity: 0.5; }
+
   @media (max-width: 768px) {
-    .grid-container { grid-template-columns: 1fr; }
-    .title { font-size: 36px; }
-    .bio-text { font-size: 18px; }
-    .portfolio-canvas { height: auto; padding: 20px 0; }
+    .canvas { width: 95vw; }
+    .main-title { font-size: 50px; }
+    .quote { font-size: 20px; left: 10%; }
+    .category-container { grid-template-columns: 1fr; overflow-y: auto; }
   }
 </style>
 </head>
 <body>
 
-  <div class="portfolio-canvas">
+  <div class="canvas" id="main-canvas">
     
-    <div class="header">
-      <div class="title">Ronan <span>Sullivan</span></div>
-      <div class="subtitle">Journalism & Column Portfolio</div>
-    </div>
+    <div class="photo-slice slice-1"></div>
+    <div class="photo-slice slice-2"></div>
+    <div class="photo-slice slice-3"></div>
 
-    <div class="main-content">
-      
-      <div class="page active" id="page-bio">
-        <div class="bio-text">
-          I am a dedicated journalist studying for an NCTJ Diploma at the PA Media Academy in London. I specialize in real-time sports journalism, cultural analytics, and in-depth column writing, bridging the gap between grassroots triumphs and professional artistry.
-        </div>
-      </div>
+    <div class="poster-text stars">★★★★★</div>
+    <div class="poster-text quote">"An absolutely breathtaking piece of journalism."</div>
 
-      <div class="page" id="page-writing">
-        <div class="grid-container">
-          
-          <button class="category-card" onclick="openSection('sports')">
-            <span class="card-num">01 / FIELD</span>
-            <span class="card-title">Live Sports</span>
-          </button>
-
-          <button class="category-card" onclick="openSection('theatre')">
-            <span class="card-num">02 / STAGE</span>
-            <span class="card-title">Theatre & Arts</span>
-          </button>
-
-          <button class="category-card" onclick="openSection('columns')">
-            <span class="card-num">03 / VOX</span>
-            <span class="card-title">Written Columns</span>
-          </button>
-
-          <button class="category-card" onclick="openSection('books')">
-            <span class="card-num">04 / TEXT</span>
-            <span class="card-title">Book Critiques</span>
-          </button>
-
-        </div>
-      </div>
-
-      <div class="page" id="page-contact">
-        <div style="display: flex; flex-direction: column; gap: 20px;">
-          <a href="mailto:ronansullivan@hotmail.co.uk" class="editorial-link" style="font-size: 18px;">ronansullivan@hotmail.co.uk</a>
-          <a href="https://www.linkedin.com/in/ronanmsullivan/" target="_blank" class="editorial-link" style="font-size: 18px;">LinkedIn Profile</a>
-        </div>
-      </div>
-
-      <div class="overlay-panel" id="content-panel">
-        <div class="panel-title" id="panel-title">Section Title</div>
-        <div class="panel-links" id="panel-links">
-          </div>
-        <button class="back-btn" onclick="closeSection()">← Back to categories</button>
-      </div>
-
-    </div>
-
-    <div class="footer">
-      <button class="nav-btn active" onclick="switchPage('bio', this)">Bio</button>
-      <button class="nav-btn" onclick="switchPage('writing', this)">Writing</button>
-      <button class="nav-btn" onclick="switchPage('contact', this)">Contact</button>
+    <div class="masthead">
+      <h1 class="main-title">Ronan Sullivan<br>Portfolio</h1>
+      <nav class="main-nav">
+        <button class="nav-item" onclick="openPage('about')">Bio</button>
+        <button class="nav-item" onclick="openPage('writing')">Writing</button>
+        <button class="nav-item" onclick="openPage('contact')">Contact</button>
+      </nav>
     </div>
 
   </div>
 
-  <script>
-    // Data isolated cleanly
-    const data = {
-      sports: {
-        title: "Live Sports Reporting",
-        links: [
-          { name: "Fenix Trophy Coverage", url: "https://enfielddispatch.co.uk/win-over-welsh-side-will-go-long-way-to-securing-enfield-towns-fenix-trophy-play-off-place/" }
-        ]
-      },
-      theatre: {
-        title: "Theatre & Arts Reviews",
-        links: [
-          { name: "The Motive and the Cue Review", url: "https://ronanswriting.blogspot.com/2023/05/national-theatre-review-motive-and-cue.html" },
-          { name: "Dancing at Lughnasa Review", url: "https://ronanswriting.blogspot.com/2023/05/national-theatre-dancing-at-lughnasa.html" }
-        ]
-      },
-      columns: {
-        title: "Written Columns",
-        links: [
-          { name: "Acting Souljam — Freshers Columnist", url: "https://impactnottingham.com/2018/03/acting-souljam-drunk-texting-grateful-another-month-life-freshers-columnist/" },
-          { name: "Fresh Year — Freshers Columnist", url: "https://impactnottingham.com/2018/01/fresh-year-freshers-columnist/" }
-        ]
-      },
-      books: {
-        title: "Book Critiques",
-        links: [
-          { name: "Critique: My Brilliant Friend", url: "https://ronanswriting.blogspot.com/2022/12/book-review-wednesday-second-place-by.html" },
-          { name: "Critique: Second Place", url: "https://ronanswriting.blogspot.com/2022/12/book-review-wednesday-second-place-by.html" }
-        ]
-      }
-    };
+  <div class="fullscreen-content" id="page-about">
+    <div class="content-header">
+      <span>About / Bio</span>
+      <button class="close-btn" onclick="closePage()">[ Close ]</button>
+    </div>
+    <div style="grid-column: 2 / 8; grid-row: 5 / 11; font-size: 20px; line-height: 1.5; font-weight: 700;">
+      I am a dedicated journalist studying for an NCTJ Diploma at the PA Media Academy in London. I specialize in real-time sports journalism, cultural analytics, and in-depth column writing, bridging the gap between grassroots triumphs and professional artistry.
+    </div>
+  </div>
 
-    // Page Switching (Blur and Scale logic)
-    function switchPage(pageId, btn) {
-      document.querySelectorAll('.page').forEach(page => page.classList.remove('active'));
-      document.querySelectorAll('.nav-btn').forEach(nav => nav.classList.remove('active'));
+  <div class="fullscreen-content" id="page-writing">
+    <div class="content-header">
+      <span>Writing Sub-sections</span>
+      <button class="close-btn" onclick="closePage()">[ Close ]</button>
+    </div>
+    <div class="category-container">
       
-      // Delay visual load slightly to let current active element handle its exit
+      <div class="category-box">
+        <div>
+          <span class="cat-label">Section 01</span>
+          <h2 class="cat-title">Live Sports</h2>
+        </div>
+        <a href="https://enfielddispatch.co.uk/win-over-welsh-side-will-go-long-way-to-securing-enfield-towns-fenix-trophy-play-off-place/" target="_blank" class="editorial-link">View Fenix Trophy Coverage →</a>
+      </div>
+
+      <div class="category-box">
+        <div>
+          <span class="cat-label">Section 02</span>
+          <h2 class="cat-title">Theatre & Arts</h2>
+        </div>
+        <div>
+          <a href="https://ronanswriting.blogspot.com/2023/05/national-theatre-review-motive-and-cue.html" target="_blank" class="editorial-link">The Motive and the Cue Review →</a>
+          <a href="https://ronanswriting.blogspot.com/2023/05/national-theatre-dancing-at-lughnasa.html" target="_blank" class="editorial-link" style="margin-top: 5px;">Dancing at Lughnasa Review →</a>
+        </div>
+      </div>
+
+      <div class="category-box">
+        <div>
+          <span class="cat-label">Section 03</span>
+          <h2 class="cat-title">Columns</h2>
+        </div>
+        <div>
+          <a href="https://impactnottingham.com/2018/03/acting-souljam-drunk-texting-grateful-another-month-life-freshers-columnist/" target="_blank" class="editorial-link">'Acting Souljam...' →</a>
+          <a href="https://impactnottingham.com/2018/01/fresh-year-freshers-columnist/" target="_blank" class="editorial-link" style="margin-top: 5px;">'Fresh Year' →</a>
+        </div>
+      </div>
+
+      <div class="category-box">
+        <div>
+          <span class="cat-label">Section 04</span>
+          <h2 class="cat-title">Book Critiques</h2>
+        </div>
+        <div>
+          <a href="https://ronanswriting.blogspot.com/2022/12/book-review-wednesday-second-place-by.html" target="_blank" class="editorial-link">Review: My Brilliant Friend →</a>
+          <a href="https://ronanswriting.blogspot.com/2022/12/book-review-wednesday-second-place-by.html" target="_blank" class="editorial-link" style="margin-top: 5px;">Review: Second Place →</a>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="fullscreen-content" id="page-contact">
+    <div class="content-header">
+      <span>Contact</span>
+      <button class="close-btn" onclick="closePage()">[ Close ]</button>
+    </div>
+    <div style="grid-column: 2 / 10; grid-row: 5 / 11;">
+      <a href="mailto:ronansullivan@hotmail.co.uk" style="font-size: 30px; font-weight: 900; color: var(--black); text-decoration: none; display: block; margin-bottom: 10px;">ronansullivan@hotmail.co.uk</a>
+      <a href="https://www.linkedin.com/in/ronanmsullivan/" target="_blank" style="font-size: 20px; font-weight: 700; color: var(--black); text-decoration: none;">View LinkedIn Profile →</a>
+    </div>
+  </div>
+
+  <script>
+    function openPage(pageId) {
+      // 1. Displace the background slices (The split-motion animation)
+      document.getElementById('main-canvas').classList.add('displaced');
+      
+      // 2. Bring in the full screen panel
       setTimeout(() => {
         document.getElementById('page-' + pageId).classList.add('active');
-        btn.classList.add('active');
-      }, 50);
-
-      // Close the specific text drawer if it's open when switching main tabs
-      closeSection();
+      }, 300);
     }
 
-    // Modal Drawer Reveal
-    function openSection(slug) {
-      const section = data[slug];
-      if (!section) return;
-
-      document.getElementById('panel-title').innerText = section.title;
+    function closePage() {
+      // 1. Hide all active sub pages
+      document.querySelectorAll('.fullscreen-content').forEach(p => p.classList.remove('active'));
       
-      const linksContainer = document.getElementById('panel-links');
-      linksContainer.innerHTML = '';
-
-      section.links.forEach(link => {
-        const a = document.createElement('a');
-        a.href = link.url;
-        a.target = "_blank";
-        a.className = "editorial-link";
-        a.innerText = link.name;
-        linksContainer.appendChild(a);
-      });
-
-      document.getElementById('content-panel').classList.add('active');
-    }
-
-    function closeSection() {
-      document.getElementById('content-panel').classList.remove('active');
+      // 2. Return background slices to their resting position
+      setTimeout(() => {
+        document.getElementById('main-canvas').classList.remove('displaced');
+      }, 300);
     }
   </script>
 </body>
