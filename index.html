@@ -11,9 +11,8 @@
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
   :root {
-    --bg-warm: #fcfbf9; /* Clean, gallery-wall off-white */
+    --bg-warm: #eae3d9; /* Back to the poster's original muted cream */
     --black: #1a1512;
-    --yves-blue: #002FA7; /* Pure electric Yves Klein Blue */
     --font: 'Archivo', sans-serif;
     --ease: cubic-bezier(0.77, 0, 0.175, 1);
   }
@@ -29,12 +28,12 @@
     overflow: hidden;
   }
 
-  /* FILM GRAIN OVERLAY */
+  /* RAW FILM GRAIN OVERLAY */
   body::before {
     content: '';
     position: fixed;
     top: 0; left: 0; width: 100%; height: 100%;
-    opacity: 0.18;
+    opacity: 0.28;
     pointer-events: none;
     z-index: 50;
     background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
@@ -52,18 +51,35 @@
     gap: 0;
   }
 
-  /* ABSTRACT SLICES (Now washed in powerful Yves Klein Blue) */
+  /* STYLIZED PHOTO SLICES (Monochromatic & Harshly Cropped) */
   .photo-slice {
-    background-color: var(--yves-blue);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(0,0,0,0.08);
     background-size: cover;
     background-position: center;
+    background-repeat: no-repeat;
+    /* This forces the images into high-contrast black and white to match the poster's mood */
+    filter: grayscale(100%) contrast(120%);
     transition: transform 1.2s var(--ease), opacity 1.2s var(--ease);
   }
 
-  .slice-1 { grid-column: 1 / 4; grid-row: 1 / 9; opacity: 0.9; }
-  .slice-2 { grid-column: 4 / 9; grid-row: 3 / 11; opacity: 1; }
-  .slice-3 { grid-column: 9 / 13; grid-row: 1 / 12; opacity: 0.85; }
+  /* 🚨 DROP YOUR IMAGE LINKS HERE 🚨
+    Replace the URLs inside the quotes with your actual photo links.
+  */
+  .slice-1 { 
+    grid-column: 1 / 4; 
+    grid-row: 1 / 9; 
+    background-image: url('https://picsum.photos/seed/ronan1/600/1200'); 
+  }
+  .slice-2 { 
+    grid-column: 4 / 9; 
+    grid-row: 3 / 11; 
+    background-image: url('https://picsum.photos/seed/ronan2/800/1200'); 
+  }
+  .slice-3 { 
+    grid-column: 9 / 13; 
+    grid-row: 1 / 12; 
+    background-image: url('https://picsum.photos/seed/ronan3/600/1500'); 
+  }
 
   /* THE MASTHEAD / TITLE */
   .masthead {
@@ -103,11 +119,9 @@
     border: none;
     background: none;
     color: var(--black);
-    transition: color 0.3s;
-    position: relative;
+    transition: opacity 0.3s;
   }
-  
-  .nav-item:hover { color: var(--yves-blue); }
+  .nav-item:hover { opacity: 0.5; }
 
   /* FULLSCREEN CONTENT PANELS */
   .fullscreen-content {
@@ -134,11 +148,10 @@
     font-size: 40px;
     font-weight: 900;
     text-transform: uppercase;
-    border-bottom: 3px solid var(--yves-blue);
+    border-bottom: 3px solid var(--black);
     display: flex;
     align-items: center;
     justify-content: space-between;
-    color: var(--yves-blue);
   }
 
   .close-btn {
@@ -149,9 +162,9 @@
     border: none;
     background: none;
     color: var(--black);
-    transition: color 0.2s;
+    transition: opacity 0.2s;
   }
-  .close-btn:hover { color: var(--yves-blue); }
+  .close-btn:hover { opacity: 0.5; }
 
   /* CATEGORIES GRID */
   .category-container {
@@ -171,7 +184,7 @@
     height: 140px;
   }
 
-  .cat-label { font-size: 11px; font-weight: 700; text-transform: uppercase; color: var(--yves-blue); }
+  .cat-label { font-size: 11px; font-weight: 700; text-transform: uppercase; opacity: 0.5; }
   .cat-title { font-size: 24px; font-weight: 900; text-transform: uppercase; margin-top: 5px; }
   
   .editorial-link {
@@ -182,22 +195,20 @@
     text-transform: uppercase;
     margin-top: auto;
     display: block;
-    transition: color 0.2s;
+    transition: opacity 0.2s;
   }
-  .editorial-link:hover { color: var(--yves-blue); }
+  .editorial-link:hover { opacity: 0.5; }
 
-  /* SOPHISTICATED SPLIT ANIMATION */
-  .canvas.displaced .slice-1 { transform: translateY(-40px); opacity: 0.3; }
-  .canvas.displaced .slice-2 { transform: translateY(40px); opacity: 0.3; }
-  .canvas.displaced .slice-3 { transform: translateX(40px); opacity: 0.3; }
+  /* SPLIT-MOTION ANIMATION */
+  .canvas.displaced .slice-1 { transform: translateY(-40px); opacity: 0.5; }
+  .canvas.displaced .slice-2 { transform: translateY(40px); opacity: 0.5; }
+  .canvas.displaced .slice-3 { transform: translateX(40px); opacity: 0.5; }
 
   @media (max-width: 768px) {
     .canvas { width: 95vw; }
     .main-title { font-size: 50px; }
     .category-container { grid-template-columns: 1fr; overflow-y: auto; }
-    .slice-1 { grid-column: 1 / 5; }
-    .slice-2 { grid-column: 5 / 12; }
-    .slice-3 { display: none; } /* Simplify on mobile */
+    .slice-3 { display: none; } /* Focus on the staggered overlaps for mobile */
   }
 </style>
 </head>
@@ -225,7 +236,7 @@
       <span>About / Bio</span>
       <button class="close-btn" onclick="closePage()">[ Close ]</button>
     </div>
-    <div style="grid-column: 2 / 8; grid-row: 5 / 11; font-size: 22px; line-height: 1.5; font-weight: 700; color: var(--black);">
+    <div style="grid-column: 2 / 8; grid-row: 5 / 11; font-size: 22px; line-height: 1.5; font-weight: 700;">
       I am a dedicated journalist studying for an NCTJ Diploma at the PA Media Academy in London. I specialize in real-time sports journalism, cultural analytics, and in-depth column writing, bridging the gap between grassroots triumphs and professional artistry.
     </div>
   </div>
@@ -287,8 +298,8 @@
       <button class="close-btn" onclick="closePage()">[ Close ]</button>
     </div>
     <div style="grid-column: 2 / 10; grid-row: 5 / 11;">
-      <a href="mailto:ronansullivan@hotmail.co.uk" style="font-size: 30px; font-weight: 900; color: var(--black); text-decoration: none; display: block; margin-bottom: 10px; transition: color 0.2s;">ronansullivan@hotmail.co.uk</a>
-      <a href="https://www.linkedin.com/in/ronanmsullivan/" target="_blank" style="font-size: 20px; font-weight: 700; color: var(--yves-blue); text-decoration: none;">View LinkedIn Profile →</a>
+      <a href="mailto:ronansullivan@hotmail.co.uk" style="font-size: 30px; font-weight: 900; color: var(--black); text-decoration: none; display: block; margin-bottom: 10px; transition: opacity 0.2s;">ronansullivan@hotmail.co.uk</a>
+      <a href="https://www.linkedin.com/in/ronanmsullivan/" target="_blank" style="font-size: 20px; font-weight: 700; color: var(--black); text-decoration: none;">View LinkedIn Profile →</a>
     </div>
   </div>
 
