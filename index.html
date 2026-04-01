@@ -65,29 +65,6 @@
   .slice-2 { grid-column: 4 / 9; grid-row: 4 / 12; background-color: #cdc1b0; }
   .slice-3 { grid-column: 9 / 13; grid-row: 2 / 13; background-color: #c0b29f; }
 
-  /* OVERLAY CONTENT (Floating clinical text like film credits/accolades) */
-  .poster-text {
-    position: absolute;
-    z-index: 10;
-    pointer-events: none;
-    line-height: 1;
-  }
-
-  .stars {
-    top: 5%; left: 35%;
-    font-size: 24px;
-    letter-spacing: 2px;
-  }
-
-  .quote {
-    top: 10%; left: 35%;
-    font-size: 32px;
-    font-weight: 900;
-    max-width: 400px;
-    letter-spacing: -1px;
-    text-transform: uppercase;
-  }
-
   /* THE MAIN NAVIGATION / TITLE */
   .masthead {
     grid-column: 1 / 13;
@@ -211,7 +188,6 @@
   @media (max-width: 768px) {
     .canvas { width: 95vw; }
     .main-title { font-size: 50px; }
-    .quote { font-size: 20px; left: 10%; }
     .category-container { grid-template-columns: 1fr; overflow-y: auto; }
   }
 </style>
@@ -223,9 +199,6 @@
     <div class="photo-slice slice-1"></div>
     <div class="photo-slice slice-2"></div>
     <div class="photo-slice slice-3"></div>
-
-    <div class="poster-text stars">★★★★★</div>
-    <div class="poster-text quote">"An absolutely breathtaking piece of journalism."</div>
 
     <div class="masthead">
       <h1 class="main-title">Ronan Sullivan<br>Portfolio</h1>
@@ -240,7 +213,7 @@
 
   <div class="fullscreen-content" id="page-about">
     <div class="content-header">
-      <span>About / Bio</span>
+      <span>About</span>
       <button class="close-btn" onclick="closePage()">[ Close ]</button>
     </div>
     <div style="grid-column: 2 / 8; grid-row: 5 / 11; font-size: 20px; line-height: 1.5; font-weight: 700;">
@@ -250,7 +223,7 @@
 
   <div class="fullscreen-content" id="page-writing">
     <div class="content-header">
-      <span>Writing Sub-sections</span>
+      <span>My Writing</span>
       <button class="close-btn" onclick="closePage()">[ Close ]</button>
     </div>
     <div class="category-container">
@@ -312,20 +285,16 @@
 
   <script>
     function openPage(pageId) {
-      // 1. Displace the background slices (The split-motion animation)
       document.getElementById('main-canvas').classList.add('displaced');
       
-      // 2. Bring in the full screen panel
       setTimeout(() => {
         document.getElementById('page-' + pageId).classList.add('active');
       }, 300);
     }
 
     function closePage() {
-      // 1. Hide all active sub pages
       document.querySelectorAll('.fullscreen-content').forEach(p => p.classList.remove('active'));
       
-      // 2. Return background slices to their resting position
       setTimeout(() => {
         document.getElementById('main-canvas').classList.remove('displaced');
       }, 300);
