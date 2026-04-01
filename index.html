@@ -11,10 +11,11 @@
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
   :root {
-    --bg-warm: #eae3d9; /* The poster's muted, paper-like cream */
+    --bg-warm: #fcfbf9; /* Clean, gallery-wall off-white */
     --black: #1a1512;
+    --yves-blue: #002FA7; /* Pure electric Yves Klein Blue */
     --font: 'Archivo', sans-serif;
-    --ease: cubic-bezier(0.77, 0, 0.175, 1); /* Dramatic, high-end easing */
+    --ease: cubic-bezier(0.77, 0, 0.175, 1);
   }
 
   body {
@@ -28,18 +29,18 @@
     overflow: hidden;
   }
 
-  /* GRAIN OVERLAY: To match that heavy 35mm film texture from the poster */
+  /* FILM GRAIN OVERLAY */
   body::before {
     content: '';
     position: fixed;
     top: 0; left: 0; width: 100%; height: 100%;
-    opacity: 0.25;
+    opacity: 0.18;
     pointer-events: none;
     z-index: 50;
     background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
   }
 
-  /* CANVAS GRID (The raw poster frame layout) */
+  /* CANVAS GRID */
   .canvas {
     width: 90vw;
     max-width: 1000px;
@@ -48,47 +49,23 @@
     grid-template-columns: repeat(12, 1fr);
     grid-template-rows: repeat(12, 1fr);
     position: relative;
-    gap: 0; /* Poster style uses flush or overlapping crops, not gaps */
+    gap: 0;
   }
 
-  /* BACKGROUND PANELS (Simulating the overlapping portrait slices) */
+  /* ABSTRACT SLICES (Now washed in powerful Yves Klein Blue) */
   .photo-slice {
-    background-color: #d8cfc0;
-    border: 1px solid rgba(0,0,0,0.05);
+    background-color: var(--yves-blue);
+    border: 1px solid rgba(255, 255, 255, 0.1);
     background-size: cover;
     background-position: center;
     transition: transform 1.2s var(--ease), opacity 1.2s var(--ease);
   }
 
-  /* Specific slice coordinates mimicking the poster's staggered layout */
-  .slice-1 { grid-column: 1 / 4; grid-row: 1 / 9; }
-  .slice-2 { grid-column: 4 / 9; grid-row: 4 / 12; background-color: #cdc1b0; }
-  .slice-3 { grid-column: 9 / 13; grid-row: 2 / 13; background-color: #c0b29f; }
+  .slice-1 { grid-column: 1 / 4; grid-row: 1 / 9; opacity: 0.9; }
+  .slice-2 { grid-column: 4 / 9; grid-row: 3 / 11; opacity: 1; }
+  .slice-3 { grid-column: 9 / 13; grid-row: 1 / 12; opacity: 0.85; }
 
-  /* OVERLAY CONTENT (Floating clinical text like film credits/accolades) */
-  .poster-text {
-    position: absolute;
-    z-index: 10;
-    pointer-events: none;
-    line-height: 1;
-  }
-
-  .stars {
-    top: 5%; left: 35%;
-    font-size: 24px;
-    letter-spacing: 2px;
-  }
-
-  .quote {
-    top: 10%; left: 35%;
-    font-size: 32px;
-    font-weight: 900;
-    max-width: 400px;
-    letter-spacing: -1px;
-    text-transform: uppercase;
-  }
-
-  /* THE MAIN NAVIGATION / TITLE */
+  /* THE MASTHEAD / TITLE */
   .masthead {
     grid-column: 1 / 13;
     grid-row: 9 / 13;
@@ -113,7 +90,7 @@
   .main-nav {
     display: flex;
     gap: 40px;
-    margin-top: 20px;
+    margin-top: 25px;
     pointer-events: auto;
   }
 
@@ -126,11 +103,13 @@
     border: none;
     background: none;
     color: var(--black);
-    transition: opacity 0.3s;
+    transition: color 0.3s;
+    position: relative;
   }
-  .nav-item:hover { opacity: 0.6; }
+  
+  .nav-item:hover { color: var(--yves-blue); }
 
-  /* DYNAMIC SLIDE-IN PANELS (The 'Sub-Pages') */
+  /* FULLSCREEN CONTENT PANELS */
   .fullscreen-content {
     position: absolute;
     top: 0; left: 0; width: 100%; height: 100%;
@@ -155,28 +134,32 @@
     font-size: 40px;
     font-weight: 900;
     text-transform: uppercase;
-    border-bottom: 3px solid var(--black);
+    border-bottom: 3px solid var(--yves-blue);
     display: flex;
     align-items: center;
     justify-content: space-between;
+    color: var(--yves-blue);
   }
 
   .close-btn {
-    font-size: 16px;
+    font-size: 14px;
     font-weight: 700;
     text-transform: uppercase;
     cursor: pointer;
     border: none;
     background: none;
+    color: var(--black);
+    transition: color 0.2s;
   }
+  .close-btn:hover { color: var(--yves-blue); }
 
-  /* Categories Grid inside the writing tab */
+  /* CATEGORIES GRID */
   .category-container {
     grid-column: 2 / 12;
     grid-row: 5 / 12;
     display: grid;
     grid-template-columns: repeat(2, 1fr);
-    gap: 30px;
+    gap: 40px;
   }
 
   .category-box {
@@ -185,11 +168,11 @@
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    height: 150px;
+    height: 140px;
   }
 
-  .cat-label { font-size: 11px; font-weight: 700; text-transform: uppercase; opacity: 0.5; }
-  .cat-title { font-size: 24px; font-weight: 900; text-transform: uppercase; }
+  .cat-label { font-size: 11px; font-weight: 700; text-transform: uppercase; color: var(--yves-blue); }
+  .cat-title { font-size: 24px; font-weight: 900; text-transform: uppercase; margin-top: 5px; }
   
   .editorial-link {
     font-size: 13px;
@@ -199,20 +182,22 @@
     text-transform: uppercase;
     margin-top: auto;
     display: block;
-    transition: opacity 0.2s;
+    transition: color 0.2s;
   }
-  .editorial-link:hover { opacity: 0.5; }
+  .editorial-link:hover { color: var(--yves-blue); }
 
-  /* SOPHISTICATED SPLIT ANIMATION (Triggered on view) */
-  .canvas.displaced .slice-1 { transform: translateY(-30px); opacity: 0.5; }
-  .canvas.displaced .slice-2 { transform: translateY(30px); opacity: 0.5; }
-  .canvas.displaced .slice-3 { transform: translateX(30px); opacity: 0.5; }
+  /* SOPHISTICATED SPLIT ANIMATION */
+  .canvas.displaced .slice-1 { transform: translateY(-40px); opacity: 0.3; }
+  .canvas.displaced .slice-2 { transform: translateY(40px); opacity: 0.3; }
+  .canvas.displaced .slice-3 { transform: translateX(40px); opacity: 0.3; }
 
   @media (max-width: 768px) {
     .canvas { width: 95vw; }
     .main-title { font-size: 50px; }
-    .quote { font-size: 20px; left: 10%; }
     .category-container { grid-template-columns: 1fr; overflow-y: auto; }
+    .slice-1 { grid-column: 1 / 5; }
+    .slice-2 { grid-column: 5 / 12; }
+    .slice-3 { display: none; } /* Simplify on mobile */
   }
 </style>
 </head>
@@ -223,9 +208,6 @@
     <div class="photo-slice slice-1"></div>
     <div class="photo-slice slice-2"></div>
     <div class="photo-slice slice-3"></div>
-
-    <div class="poster-text stars">★★★★★</div>
-    <div class="poster-text quote">"An absolutely breathtaking piece of journalism."</div>
 
     <div class="masthead">
       <h1 class="main-title">Ronan Sullivan<br>Portfolio</h1>
@@ -243,7 +225,7 @@
       <span>About / Bio</span>
       <button class="close-btn" onclick="closePage()">[ Close ]</button>
     </div>
-    <div style="grid-column: 2 / 8; grid-row: 5 / 11; font-size: 20px; line-height: 1.5; font-weight: 700;">
+    <div style="grid-column: 2 / 8; grid-row: 5 / 11; font-size: 22px; line-height: 1.5; font-weight: 700; color: var(--black);">
       I am a dedicated journalist studying for an NCTJ Diploma at the PA Media Academy in London. I specialize in real-time sports journalism, cultural analytics, and in-depth column writing, bridging the gap between grassroots triumphs and professional artistry.
     </div>
   </div>
@@ -305,27 +287,21 @@
       <button class="close-btn" onclick="closePage()">[ Close ]</button>
     </div>
     <div style="grid-column: 2 / 10; grid-row: 5 / 11;">
-      <a href="mailto:ronansullivan@hotmail.co.uk" style="font-size: 30px; font-weight: 900; color: var(--black); text-decoration: none; display: block; margin-bottom: 10px;">ronansullivan@hotmail.co.uk</a>
-      <a href="https://www.linkedin.com/in/ronanmsullivan/" target="_blank" style="font-size: 20px; font-weight: 700; color: var(--black); text-decoration: none;">View LinkedIn Profile →</a>
+      <a href="mailto:ronansullivan@hotmail.co.uk" style="font-size: 30px; font-weight: 900; color: var(--black); text-decoration: none; display: block; margin-bottom: 10px; transition: color 0.2s;">ronansullivan@hotmail.co.uk</a>
+      <a href="https://www.linkedin.com/in/ronanmsullivan/" target="_blank" style="font-size: 20px; font-weight: 700; color: var(--yves-blue); text-decoration: none;">View LinkedIn Profile →</a>
     </div>
   </div>
 
   <script>
     function openPage(pageId) {
-      // 1. Displace the background slices (The split-motion animation)
       document.getElementById('main-canvas').classList.add('displaced');
-      
-      // 2. Bring in the full screen panel
       setTimeout(() => {
         document.getElementById('page-' + pageId).classList.add('active');
       }, 300);
     }
 
     function closePage() {
-      // 1. Hide all active sub pages
       document.querySelectorAll('.fullscreen-content').forEach(p => p.classList.remove('active'));
-      
-      // 2. Return background slices to their resting position
       setTimeout(() => {
         document.getElementById('main-canvas').classList.remove('displaced');
       }, 300);
