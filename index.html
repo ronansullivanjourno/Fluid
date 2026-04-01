@@ -6,335 +6,253 @@
 <title>Ronan Sullivan — Portfolio</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;700;900&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=Playfair+Display:ital,wght@0,700;1,400&display=swap" rel="stylesheet">
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
   :root {
-    --bg-warm: #eae3d9; 
-    --black: #1a1512;
-    --accent-crimson: #801818; /* Unified accent tone */
-    --font: 'Archivo', sans-serif;
-    --ease: cubic-bezier(0.77, 0, 0.175, 1);
+    --bg: #f9f6f0; /* Soft, warm cinematic poster off-white */
+    --dark: #1a1a1a; /* Rich, dark off-black */
+    --accent: #c5a880; /* Muted gold / sand editorial accent */
+    --serif: 'Playfair Display', serif;
+    --sans: 'DM Sans', sans-serif;
+    --ease: cubic-bezier(0.25, 1, 0.5, 1);
   }
 
   body {
-    background-color: var(--bg-warm);
-    color: var(--black);
-    font-family: var(--font);
-    min-height: 100vh;
+    background-color: var(--bg);
+    color: var(--dark);
+    font-family: var(--sans);
     display: flex;
     justify-content: center;
     align-items: center;
+    min-height: 100vh;
     overflow: hidden;
   }
 
-  /* RAW FILM GRAIN OVERLAY */
-  body::before {
-    content: '';
-    position: fixed;
-    top: 0; left: 0; width: 100%; height: 100%;
-    opacity: 0.28;
-    pointer-events: none;
-    z-index: 50;
-    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
-  }
-
-  /* CANVAS GRID */
-  .canvas {
+  /* CINEMATIC POSTER FRAME */
+  .portfolio-canvas {
     width: 90vw;
-    max-width: 1000px;
+    max-width: 1200px;
     height: 85vh;
     display: grid;
-    grid-template-columns: repeat(12, 1fr);
-    grid-template-rows: repeat(12, 1fr);
+    grid-template-rows: auto 1fr auto;
     position: relative;
-    gap: 0;
+    padding: 40px 0;
   }
 
-  /* STYLIZED PHOTO SLICES */
-  .photo-slice {
-    border: 1px solid rgba(0,0,0,0.08);
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
-    filter: grayscale(100%) contrast(120%);
-    cursor: pointer;
+  /* HEADER */
+  .header {
+    text-align: center;
+    border-bottom: 1px solid rgba(26, 26, 26, 0.1);
+    padding-bottom: 30px;
+  }
+
+  .title {
+    font-family: var(--serif);
+    font-size: 48px;
+    font-weight: 700;
+    letter-spacing: -1px;
+    line-height: 1;
+    text-transform: capitalize;
+  }
+
+  .title span {
+    font-family: var(--serif);
+    font-weight: 400;
+    font-style: italic;
+    color: var(--accent);
+  }
+
+  .subtitle {
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 4px;
+    color: rgba(26, 26, 26, 0.5);
+    margin-top: 10px;
+  }
+
+  /* MAIN CONTENT AREA with cinematic blur-in transition */
+  .main-content {
+    position: relative;
     overflow: hidden;
-    transition: transform 1.2s var(--ease), opacity 1.2s var(--ease), filter 0.5s ease;
+    margin: 40px 0;
   }
 
-  /* Hover pulse and zoom effect */
-  .photo-slice:hover {
-    filter: grayscale(100%) contrast(140%);
-    animation: imagePulse 2s infinite ease-in-out;
-  }
-
-  @keyframes imagePulse {
-    0% { transform: scale(1); }
-    50% { transform: scale(1.03); }
-    100% { transform: scale(1); }
-  }
-
-  /* Keep base alignment separate from hover scales */
-  .slice-1 { 
-    grid-column: 1 / 4; 
-    grid-row: 1 / 9; 
-    background-image: url('https://picsum.photos/seed/ronan1/600/1200'); 
-  }
-  .slice-2 { 
-    grid-column: 4 / 9; 
-    grid-row: 3 / 11; 
-    background-image: url('https://picsum.photos/seed/ronan2/800/1200'); 
-  }
-  .slice-3 { 
-    grid-column: 9 / 13; 
-    grid-row: 1 / 12; 
-    background-image: url('https://picsum.photos/seed/ronan3/600/1500'); 
-  }
-
-  /* THE MASTHEAD / TITLE */
-  .masthead {
-    grid-column: 1 / 13;
-    grid-row: 9 / 13;
-    z-index: 20;
+  .page {
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
     display: flex;
     flex-direction: column;
-    justify-content: flex-end;
-    padding: 30px;
-    pointer-events: none;
-  }
-
-  .main-title {
-    font-size: 80px;
-    font-weight: 900;
-    letter-spacing: -3px;
-    line-height: 0.85;
-    text-transform: uppercase;
-    color: var(--accent-crimson); /* Crimson applied here! */
-    pointer-events: auto;
-  }
-
-  .main-nav {
-    display: flex;
-    gap: 40px;
-    margin-top: 25px;
-    pointer-events: auto;
-  }
-
-  .nav-item {
-    font-size: 14px;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    cursor: pointer;
-    border: none;
-    background: none;
-    color: var(--accent-crimson); 
-    transition: opacity 0.3s;
-  }
-  .nav-item:hover { opacity: 0.6; }
-
-  /* FULLSCREEN CONTENT PANELS */
-  .fullscreen-content {
-    position: absolute;
-    top: 0; left: 0; width: 100%; height: 100%;
-    background-color: var(--bg-warm);
-    z-index: 30;
-    display: grid;
-    grid-template-columns: repeat(12, 1fr);
-    grid-template-rows: repeat(12, 1fr);
-    opacity: 0;
-    pointer-events: none;
-    transition: opacity 0.8s var(--ease);
-  }
-
-  .fullscreen-content.active {
-    opacity: 1;
-    pointer-events: auto;
-  }
-
-  .content-header {
-    grid-column: 2 / 12;
-    grid-row: 2 / 4;
-    font-size: 40px;
-    font-weight: 900;
-    text-transform: uppercase;
-    border-bottom: 3px solid var(--black);
-    display: flex;
+    justify-content: center;
     align-items: center;
-    justify-content: space-between;
+    text-align: center;
+    opacity: 0;
+    filter: blur(20px);
+    transform: scale(0.98);
+    transition: opacity 0.8s var(--ease), filter 0.8s var(--ease), transform 0.8s var(--ease);
+    pointer-events: none;
   }
 
-  .close-btn {
-    font-size: 14px;
-    font-weight: 700;
-    text-transform: uppercase;
-    cursor: pointer;
-    border: none;
-    background: none;
-    color: var(--accent-crimson); 
-    transition: opacity 0.2s;
+  .page.active {
+    opacity: 1;
+    filter: blur(0px);
+    transform: scale(1);
+    pointer-events: auto;
   }
-  .close-btn:hover { opacity: 0.6; }
 
-  /* CATEGORIES GRID */
-  .category-container {
-    grid-column: 2 / 12;
-    grid-row: 5 / 12;
+  /* PAGE: BIO/ABOUT */
+  .bio-text {
+    font-family: var(--serif);
+    font-size: 24px;
+    line-height: 1.6;
+    max-width: 750px;
+    color: var(--dark);
+  }
+
+  /* PAGE: CATEGORIES */
+  .grid-container {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
-    gap: 40px;
+    gap: 30px;
+    width: 100%;
+    max-width: 900px;
   }
 
-  .category-box {
-    border-top: 2px solid var(--black);
-    padding-top: 15px;
+  .category-card {
+    background: none;
+    border: none;
+    text-align: left;
+    cursor: pointer;
+    padding: 20px;
+    border-bottom: 1px solid rgba(26, 26, 26, 0.15);
+    transition: border-color 0.4s ease, transform 0.4s var(--ease);
     display: flex;
     flex-direction: column;
     justify-content: space-between;
     height: 140px;
   }
 
-  .cat-label { 
-    font-size: 11px; 
-    font-weight: 700; 
-    text-transform: uppercase; 
-    color: var(--accent-crimson); 
+  .category-card:hover {
+    border-color: var(--dark);
+    transform: translateY(-5px);
   }
-  
-  .cat-title { font-size: 24px; font-weight: 900; text-transform: uppercase; margin-top: 5px; }
-  
-  .editorial-link {
-    font-size: 13px;
+
+  .card-num {
+    font-size: 11px;
     font-weight: 700;
-    color: var(--black);
-    text-decoration: none;
-    text-transform: uppercase;
+    color: var(--accent);
+    letter-spacing: 2px;
+  }
+
+  .card-title {
+    font-family: var(--serif);
+    font-size: 28px;
+    font-weight: 700;
+    color: var(--dark);
     margin-top: auto;
-    display: block;
-    transition: color 0.2s;
   }
-  .editorial-link:hover { color: var(--accent-crimson); }
 
-  /* SPLIT-MOTION ANIMATION (When pages open) */
-  .canvas.displaced .slice-1 { transform: translateY(-40px); opacity: 0.5; }
-  .canvas.displaced .slice-2 { transform: translateY(40px); opacity: 0.5; }
-  .canvas.displaced .slice-3 { transform: translateX(40px); opacity: 0.5; }
-
-  @media (max-width: 768px) {
-    .canvas { width: 95vw; }
-    .main-title { font-size: 50px; }
-    .category-container { grid-template-columns: 1fr; overflow-y: auto; }
-    .slice-3 { display: none; }
+  /* OVERLAY PANEL */
+  .overlay-panel {
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background-color: var(--bg);
+    display: flex;
+    flex-direction: column;
+    justify(center);
+    justify-content: center;
+    align-items: center;
+    opacity: 0;
+    pointer-events: none;
+    transform: translateY(15px);
+    transition: opacity 0.5s var(--ease), transform 0.5s var(--ease);
+    z-index: 5;
   }
-</style>
-</head>
-<body>
 
-  <div class="canvas" id="main-canvas">
-    
-    <div class="photo-slice slice-1" onclick="openPage('writing')"></div>
-    <div class="photo-slice slice-2" onclick="openPage('writing')"></div>
-    <div class="photo-slice slice-3" onclick="openPage('writing')"></div>
+  .overlay-panel.active {
+    opacity: 1;
+    pointer-events: auto;
+    transform: translateY(0);
+  }
 
-    <div class="masthead">
-      <h1 class="main-title">Ronan Sullivan<br>Portfolio</h1>
-      <nav class="main-nav">
-        <button class="nav-item" onclick="openPage('about')">Bio</button>
-        <button class="nav-item" onclick="openPage('writing')">Writing</button>
-        <button class="nav-item" onclick="openPage('contact')">Contact</button>
-      </nav>
-    </div>
+  .panel-title {
+    font-family: var(--serif);
+    font-size: 32px;
+    margin-bottom: 20px;
+  }
 
-  </div>
+  .panel-links {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    margin-top: 20px;
+  }
 
-  <div class="fullscreen-content" id="page-about">
-    <div class="content-header">
-      <span>About / Bio</span>
-      <button class="close-btn" onclick="closePage()">[ Close ]</button>
-    </div>
-    <div style="grid-column: 2 / 8; grid-row: 5 / 11; font-size: 22px; line-height: 1.5; font-weight: 700;">
-      I am a dedicated journalist studying for an NCTJ Diploma at the PA Media Academy in London. I specialize in real-time sports journalism, cultural analytics, and in-depth column writing, bridging the gap between grassroots triumphs and professional artistry.
-    </div>
-  </div>
+  .editorial-link {
+    font-size: 14px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    color: var(--dark);
+    text-decoration: none;
+    position: relative;
+    padding-bottom: 5px;
+  }
 
-  <div class="fullscreen-content" id="page-writing">
-    <div class="content-header">
-      <span>Writing Sub-sections</span>
-      <button class="close-btn" onclick="closePage()">[ Close ]</button>
-    </div>
-    <div class="category-container">
-      
-      <div class="category-box">
-        <div>
-          <span class="cat-label">Section 01</span>
-          <h2 class="cat-title">Live Sports</h2>
-        </div>
-        <a href="https://enfielddispatch.co.uk/win-over-welsh-side-will-go-long-way-to-securing-enfield-towns-fenix-trophy-play-off-place/" target="_blank" class="editorial-link">View Fenix Trophy Coverage →</a>
-      </div>
+  .editorial-link::after {
+    content: '';
+    position: absolute;
+    bottom: 0; left: 0;
+    width: 100%; height: 1px;
+    background-color: var(--accent);
+    transform: scaleX(0);
+    transform-origin: right;
+    transition: transform 0.4s var(--ease);
+  }
 
-      <div class="category-box">
-        <div>
-          <span class="cat-label">Section 02</span>
-          <h2 class="cat-title">Theatre & Arts</h2>
-        </div>
-        <div>
-          <a href="https://ronanswriting.blogspot.com/2023/05/national-theatre-review-motive-and-cue.html" target="_blank" class="editorial-link">The Motive and the Cue Review →</a>
-          <a href="https://ronanswriting.blogspot.com/2023/05/national-theatre-dancing-at-lughnasa.html" target="_blank" class="editorial-link" style="margin-top: 5px;">Dancing at Lughnasa Review →</a>
-        </div>
-      </div>
+  .editorial-link:hover::after {
+    transform: scaleX(1);
+    transform-origin: left;
+  }
 
-      <div class="category-box">
-        <div>
-          <span class="cat-label">Section 03</span>
-          <h2 class="cat-title">Columns</h2>
-        </div>
-        <div>
-          <a href="https://impactnottingham.com/2018/03/acting-souljam-drunk-texting-grateful-another-month-life-freshers-columnist/" target="_blank" class="editorial-link">'Acting Souljam...' →</a>
-          <a href="https://impactnottingham.com/2018/01/fresh-year-freshers-columnist/" target="_blank" class="editorial-link" style="margin-top: 5px;">'Fresh Year' →</a>
-        </div>
-      </div>
+  .back-btn {
+    margin-top: 40px;
+    background: none;
+    border: none;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 3px;
+    color: rgba(26, 26, 26, 0.4);
+    cursor: pointer;
+    transition: color 0.3s ease;
+  }
 
-      <div class="category-box">
-        <div>
-          <span class="cat-label">Section 04</span>
-          <h2 class="cat-title">Book Critiques</h2>
-        </div>
-        <div>
-          <a href="https://ronanswriting.blogspot.com/2022/12/book-review-wednesday-second-place-by.html" target="_blank" class="editorial-link">Review: My Brilliant Friend →</a>
-          <a href="https://ronanswriting.blogspot.com/2022/12/book-review-wednesday-second-place-by.html" target="_blank" class="editorial-link" style="margin-top: 5px;">Review: Second Place →</a>
-        </div>
-      </div>
+  .back-btn:hover { color: var(--dark); }
 
-    </div>
-  </div>
+  /* FOOTER NAVIGATION */
+  .footer {
+    display: flex;
+    justify-content: center;
+    gap: 40px;
+    border-top: 1px solid rgba(26, 26, 26, 0.1);
+    padding-top: 30px;
+  }
 
-  <div class="fullscreen-content" id="page-contact">
-    <div class="content-header">
-      <span>Contact</span>
-      <button class="close-btn" onclick="closePage()">[ Close ]</button>
-    </div>
-    <div style="grid-column: 2 / 10; grid-row: 5 / 11;">
-      <a href="mailto:ronansullivan@hotmail.co.uk" style="font-size: 30px; font-weight: 900; color: var(--black); text-decoration: none; display: block; margin-bottom: 10px; transition: opacity 0.2s;">ronansullivan@hotmail.co.uk</a>
-      <a href="https://www.linkedin.com/in/ronanmsullivan/" target="_blank" style="font-size: 20px; font-weight: 700; color: var(--black); text-decoration: none;">View LinkedIn Profile →</a>
-    </div>
-  </div>
+  .nav-btn {
+    background: none;
+    border: none;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 3px;
+    color: rgba(26, 26, 26, 0.4);
+    cursor: pointer;
+    position: relative;
+    transition: color 0.3s ease;
+    padding-bottom: 5px;
+  }
 
-  <script>
-    function openPage(pageId) {
-      document.getElementById('main-canvas').classList.add('displaced');
-      setTimeout(() => {
-        document.getElementById('page-' + pageId).classList.add('active');
-      }, 300);
-    }
-
-    function closePage() {
-      document.querySelectorAll('.fullscreen-content').forEach(p => p.classList.remove('active'));
-      setTimeout(() => {
-        document.getElementById('main-canvas').classList.remove('displaced');
-      }, 300);
-    }
-  </script>
-</body>
-</html>
+  .
